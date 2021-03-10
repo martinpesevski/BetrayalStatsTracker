@@ -14,6 +14,7 @@
 		C77FB10425F10D3600C466D6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C77FB10225F10D3600C466D6 /* LaunchScreen.storyboard */; };
 		C77FB11225F25E5A00C466D6 /* Characters.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77FB11125F25E5A00C466D6 /* Characters.swift */; };
 		C77FB11525F3A70000C466D6 /* StatHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77FB11425F3A70000C466D6 /* StatHolder.swift */; };
+		C77FB11C25F502F600C466D6 /* CharacterSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77FB11B25F502F600C466D6 /* CharacterSelection.swift */; };
 		DA7657BC77E023052D9E2D74 /* Pods_Betrayal_stat_tracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36DFCC85A300F7FE68B50DFC /* Pods_Betrayal_stat_tracker.framework */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +31,7 @@
 		C77FB10525F10D3600C466D6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C77FB11125F25E5A00C466D6 /* Characters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Characters.swift; sourceTree = "<group>"; };
 		C77FB11425F3A70000C466D6 /* StatHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatHolder.swift; sourceTree = "<group>"; };
+		C77FB11B25F502F600C466D6 /* CharacterSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterSelection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 				C77FB0F725F10D3300C466D6 /* AppDelegate.swift */,
 				C77FB0F925F10D3300C466D6 /* SceneDelegate.swift */,
 				C77FB0FB25F10D3300C466D6 /* ViewController.swift */,
+				C77FB11B25F502F600C466D6 /* CharacterSelection.swift */,
 				C77FB11425F3A70000C466D6 /* StatHolder.swift */,
 				C77FB11125F25E5A00C466D6 /* Characters.swift */,
 				C77FB10025F10D3600C466D6 /* Assets.xcassets */,
@@ -211,6 +214,7 @@
 				C77FB11525F3A70000C466D6 /* StatHolder.swift in Sources */,
 				C77FB0F825F10D3300C466D6 /* AppDelegate.swift in Sources */,
 				C77FB0FA25F10D3300C466D6 /* SceneDelegate.swift in Sources */,
+				C77FB11C25F502F600C466D6 /* CharacterSelection.swift in Sources */,
 				C77FB11225F25E5A00C466D6 /* Characters.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

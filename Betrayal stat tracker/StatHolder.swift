@@ -10,7 +10,7 @@ import UIKit
 class StatView: UIView {
     var stat: StatValue {
         didSet {
-            if stat.isDeath { label.textColor = .systemRed } else { label.textColor = stat.isDefault ? .systemGreen : .systemGray4 }
+            if stat.isDeath { label.textColor = .systemRed } else { label.textColor = stat.isDefault ? .systemGreen : .systemGray2 }
             updateBorder()
         }
     }
@@ -18,7 +18,7 @@ class StatView: UIView {
     lazy var label: UILabel = {
         let l = UILabel()
         l.text = "\(stat.value)"
-        if stat.isDeath { l.textColor = .systemRed } else { l.textColor = stat.isDefault ? .systemGreen : .systemGray4 }
+        if stat.isDeath { l.textColor = .systemRed } else { l.textColor = stat.isDefault ? .systemGreen : .systemGray2 }
         l.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         l.textAlignment = .center
         return l
@@ -28,14 +28,14 @@ class StatView: UIView {
         self.stat = stat
         super.init(frame: .zero)
         addSubview(label)
-        label.snp.makeConstraints { make in make.edges.equalToSuperview() }
+        label.snp.makeConstraints { make in make.edges.equalToSuperview().inset(2) }
         updateBorder()
     }
     
     func updateBorder() {
         if stat.isSelected {
             layer.borderWidth = 1
-            layer.borderColor = UIColor.systemRed.cgColor
+            layer.borderColor = UIColor.systemBlue.cgColor
         } else {
             layer.borderWidth = 0
         }
@@ -46,13 +46,15 @@ class StatView: UIView {
     }
 }
 
-class StatHolder: UIStackView {
+class StatHolder: UIView {
     lazy var increaseButton: UIButton = {
         let b = UIButton()
         b.backgroundColor = .systemBlue
         b.setTitle("+", for: .normal)
         b.addTarget(self, action: #selector(onIncrease), for: .touchUpInside)
-        b.snp.makeConstraints { make in make.width.equalTo(50) }
+        b.snp.makeConstraints { make in make.width.height.equalTo(50) }
+        b.layer.cornerRadius = 10
+
         return b
     }()
     
@@ -61,10 +63,22 @@ class StatHolder: UIStackView {
         b.backgroundColor = .systemBlue
         b.setTitle("-", for: .normal)
         b.addTarget(self, action: #selector(onReduce), for: .touchUpInside)
-        b.snp.makeConstraints { make in make.width.equalTo(50) }
-
+        b.snp.makeConstraints { make in make.width.height.equalTo(50) }
+        b.layer.cornerRadius = 10
+        
         return b
     }()
+    
+    lazy var statsStack: UIStackView = {
+        let s = UIStackView()
+        
+        s.axis = .horizontal
+        s.spacing = 3
+        s.distribution = .fillProportionally
+        
+        return s
+    }()
+    
     var stats = [StatValue]()
     var statViews = [StatView]()
     
@@ -77,28 +91,70 @@ class StatHolder: UIStackView {
             update()
         }
         get {
-            return stats.filter { $0.isSelected } . first!
+            return stats.filter { $0.isSelected }.first!
         }
     }
+    lazy var titleLabel: UILabel = {
+        let l = UILabel()
+        l.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        return l
+    }()
+    
+    lazy var buttonStack: UIStackView = {
+       let s = UIStackView()
+        s.axis = .horizontal
+        s.distribution = .fillEqually
+        s.alignment = .center
+        s.spacing = 10
+        s.addArrangedSubview(reduceButton)
+        s.addArrangedSubview(increaseButton)
+        
+        return s
+    }()
+    
+    lazy var titleStatsStack: UIStackView = {
+       let s = UIStackView()
+        s.axis = .vertical
+        s.distribution = .fill
+        s.alignment = .leading
+        s.spacing = 10
+        s.addArrangedSubview(titleLabel)
+        s.addArrangedSubview(statsStack)
+        
+        return s
+    }()
+    
+    lazy var container: UIStackView = {
+        let s = UIStackView()
+        s.axis = .horizontal
+        s.distribution = .fill
+        s.spacing = 15
+        
+        s.addArrangedSubview(titleStatsStack)
+        s.addArrangedSubview(UIView())
+        s.addArrangedSubview(buttonStack)
 
-    init(stats: [StatValue]) {
+        return s
+    }()
+
+    init(stats: [StatValue], title: String) {
         super.init(frame: .zero)
         
-        axis = .horizontal
-        spacing = 5
-        distribution = .fillProportionally
-        
-        addArrangedSubview(reduceButton)
-        setCustomSpacing(15, after: reduceButton)
+        backgroundColor = .systemGray5
+        layer.cornerRadius = 10
+        layer.masksToBounds = true
         
         self.stats = stats
         self.statViews = createLabels(stats: stats)
         
+        titleLabel.text = title
+                
         for label in statViews {
-            addArrangedSubview(label)
+            statsStack.addArrangedSubview(label)
         }
-        
-        addArrangedSubview(increaseButton)
+                
+        addSubview(container)
+        container.snp.makeConstraints { make in make.edges.equalToSuperview().inset(10) }
     }
     
     func createLabels(stats: [StatValue]) -> [StatView] {

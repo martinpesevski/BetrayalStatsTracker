@@ -16,7 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         let window = UIWindow(windowScene: windowScene)
-        window.rootViewController = ViewController(character: Flash)
+        let nav = UINavigationController(rootViewController: CharacterSelection())
+        window.rootViewController = nav
         self.window = window
         window.makeKeyAndVisible()
     }

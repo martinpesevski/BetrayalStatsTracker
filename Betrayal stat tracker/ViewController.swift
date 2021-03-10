@@ -24,27 +24,19 @@ struct StatValue: Equatable {
     var isDead: Bool { isDeath == isSelected }
 }
 
-struct Character {
-    let name: String
-    let might: [StatValue]
-    let speed: [StatValue]
-    let knowledge: [StatValue]
-    let sanity: [StatValue]
-}
-
 class ViewController: UIViewController {
     let character: Character
     lazy var mainStack: UIStackView = {
         let s = UIStackView()
         s.axis = .vertical
         s.alignment = .center
-        s.spacing = 25
+        s.spacing = 10
         s.distribution = .fill
         return s
     }()
     lazy var titleLabel: UILabel = {
         let l = UILabel()
-        l.font = UIFont.systemFont(ofSize: 30, weight: .heavy)
+        l.font = UIFont.systemFont(ofSize: 20, weight: .heavy)
         l.lineBreakMode = .byWordWrapping
         l.numberOfLines = 0
         l.textColor = .label
@@ -53,7 +45,6 @@ class ViewController: UIViewController {
     }()
     lazy var characterImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .red
         return imageView
     }()
     
@@ -69,26 +60,31 @@ class ViewController: UIViewController {
         view.backgroundColor = .systemBackground
         
         mainStack.addArrangedSubview(characterImage)
-        characterImage.snp.makeConstraints { make in
-            make.width.equalToSuperview()
-            make.height.equalTo(characterImage.snp.width)
-        }
+
         
         titleLabel.text = character.name
+        characterImage.image = character.image
         mainStack.addArrangedSubview(titleLabel)
         mainStack.addArrangedSubview(UIView())
 
-        mainStack.addArrangedSubview(StatHolder(stats: character.might))
+        mainStack.addArrangedSubview(StatHolder(stats: character.might, title: "Might"))
         
-        mainStack.addArrangedSubview(StatHolder(stats: character.speed))
+        mainStack.addArrangedSubview(StatHolder(stats: character.speed, title: "Speed"))
         
-        mainStack.addArrangedSubview(StatHolder(stats: character.knowledge))
+        mainStack.addArrangedSubview(StatHolder(stats: character.knowledge, title: "Knowledge"))
         
-        mainStack.addArrangedSubview(StatHolder(stats: character.sanity))
+        mainStack.addArrangedSubview(StatHolder(stats: character.sanity, title: "Sanity"))
         
         
         view.addSubview(mainStack)
-        mainStack.snp.makeConstraints { make in make.edges.equalTo(view.layoutMarginsGuide).inset(20) }
+        characterImage.snp.makeConstraints { make in
+            make.width.equalToSuperview().inset(80)
+            make.height.equalTo(characterImage.snp.width)
+        }
+        mainStack.snp.makeConstraints { make in
+            make.left.right.equalTo(view.layoutMarginsGuide)
+            make.bottom.top.equalTo(view.layoutMarginsGuide).inset(30)
+        }
     }
     
     required init?(coder: NSCoder) {
