@@ -10,6 +10,7 @@ import UIKit
 class StatView: UIView {
     var stat: StatValue {
         didSet {
+            label.text = "\(stat.value)"
             if stat.isDeath { label.textColor = .systemRed } else { label.textColor = stat.isDefault ? .systemGreen : .systemGray2 }
             updateBorder()
         }
@@ -51,6 +52,7 @@ class StatHolder: UIView {
         let b = UIButton()
         b.backgroundColor = .systemBlue
         b.setTitle("+", for: .normal)
+        b.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         b.addTarget(self, action: #selector(onIncrease), for: .touchUpInside)
         b.snp.makeConstraints { make in make.width.height.equalTo(50) }
         b.layer.cornerRadius = 10
@@ -62,6 +64,7 @@ class StatHolder: UIView {
         let b = UIButton()
         b.backgroundColor = .systemBlue
         b.setTitle("-", for: .normal)
+        b.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         b.addTarget(self, action: #selector(onReduce), for: .touchUpInside)
         b.snp.makeConstraints { make in make.width.height.equalTo(50) }
         b.layer.cornerRadius = 10
@@ -74,7 +77,7 @@ class StatHolder: UIView {
         
         s.axis = .horizontal
         s.spacing = 3
-        s.distribution = .fillProportionally
+        s.distribution = .fill
         
         return s
     }()
@@ -82,16 +85,18 @@ class StatHolder: UIView {
     var stats = [StatValue]()
     var statViews = [StatView]()
     
-    var selected: StatValue {
+    var selected: Int {
         set {
-            let index = stats.firstIndex(of: newValue) ?? 0
             for (i, _) in stats.enumerated() { stats[i].isSelected = false }
 
-            stats[index].isSelected = true
+            stats[newValue].isSelected = true
             update()
         }
         get {
-            return stats.filter { $0.isSelected }.first!
+            for (i, _) in stats.enumerated() where stats[i].isSelected {
+                return i
+            }
+            return 0
         }
     }
     lazy var titleLabel: UILabel = {
@@ -157,6 +162,13 @@ class StatHolder: UIView {
         container.snp.makeConstraints { make in make.edges.equalToSuperview().inset(10) }
     }
     
+    func setup(stats: [StatValue]) {
+        self.stats = stats
+        for (index, view) in statsStack.arrangedSubviews.enumerated() where view is StatView {
+            (view as! StatView).stat = stats[index]
+        }
+    }
+    
     func createLabels(stats: [StatValue]) -> [StatView] {
         var arr = [StatView]()
         for stat in stats { arr.append(StatView(stat: stat)) }
@@ -172,14 +184,12 @@ class StatHolder: UIView {
     
     @objc
     func onIncrease() {
-        let index = stats.firstIndex(of: selected) ?? 0
-        if index < stats.count - 1 { selected = stats[index + 1] }
+        if selected < stats.count - 1 { selected += 1 }
     }
     
     @objc
     func onReduce() {
-        let index = stats.firstIndex(of: selected) ?? 0
-        if index > 0 { selected = stats[index - 1] }
+        if selected > 0 { selected -= 1 }
     }
     
     required init(coder: NSCoder) {

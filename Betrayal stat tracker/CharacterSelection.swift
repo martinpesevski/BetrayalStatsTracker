@@ -89,13 +89,8 @@ class CharacterSelection: UIViewController, UICollectionViewDataSource, UICollec
     
     @objc
     func onDone() {
-        let tabbarVC = UITabBarController()
-        var controllers: [ViewController] = []
-        for character in selectedCharacters {
-            controllers.append(ViewController(character: character))
-        }
-        tabbarVC.setViewControllers(controllers, animated: true)
-        navigationController?.pushViewController(tabbarVC, animated: true)
+        let vc = ViewController(characters: selectedCharacters)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
