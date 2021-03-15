@@ -47,6 +47,10 @@ class StatView: UIView {
     }
 }
 
+protocol StatHolderDelegate: class {
+    func didUpdateSelected(type: StatType, selected: Int)
+}
+
 class StatHolder: UIView {
     lazy var increaseButton: UIButton = {
         let b = UIButton()
@@ -84,6 +88,8 @@ class StatHolder: UIView {
     
     var stats = [StatValue]()
     var statViews = [StatView]()
+    var delegate: StatHolderDelegate?
+    let type: StatType
     
     var selected: Int {
         set {
@@ -91,6 +97,7 @@ class StatHolder: UIView {
 
             stats[newValue].isSelected = true
             update()
+            delegate?.didUpdateSelected(type: type, selected: newValue)
         }
         get {
             for (i, _) in stats.enumerated() where stats[i].isSelected {
@@ -142,7 +149,8 @@ class StatHolder: UIView {
         return s
     }()
 
-    init(stats: [StatValue], title: String) {
+    init(stats: [StatValue], type: StatType) {
+        self.type = type
         super.init(frame: .zero)
         
         backgroundColor = .systemGray5
@@ -152,7 +160,7 @@ class StatHolder: UIView {
         self.stats = stats
         self.statViews = createLabels(stats: stats)
         
-        titleLabel.text = title
+        titleLabel.text = type.title
                 
         for label in statViews {
             statsStack.addArrangedSubview(label)

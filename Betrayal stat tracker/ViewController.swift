@@ -24,12 +24,33 @@ struct StatValue: Equatable {
     var isDead: Bool { isDeath == isSelected }
 }
 
-class CharacterDetailsCell: UICollectionViewCell {
-    var might = StatHolder(stats: Flash.might, title: "Might")
-    var speed = StatHolder(stats: Flash.speed, title: "Speed")
-    var knowledge = StatHolder(stats: Flash.knowledge, title: "Knowledge")
-    var sanity = StatHolder(stats: Flash.sanity, title: "Sanity")
+enum StatType {
+    case might
+    case speed
+    case knowledge
+    case sanity
+    
+    var title: String {
+        switch self {
+        case .might: return "Might"
+        case .speed: return "Speed"
+        case .knowledge: return "Knoledge"
+        case .sanity: return "Sanity"
+        }
+    }
+}
 
+protocol CharacterCellDelegate {
+    func didUpdateStat(cell: CharacterDetailsCell, type: StatType, selected: Int)
+}
+
+class CharacterDetailsCell: UICollectionViewCell, StatHolderDelegate {
+    var might = StatHolder(stats: Flash.might, type: .might)
+    var speed = StatHolder(stats: Flash.speed, type: .speed)
+    var knowledge = StatHolder(stats: Flash.knowledge, type: .knowledge)
+    var sanity = StatHolder(stats: Flash.sanity, type: .sanity)
+    var delegate: CharacterCellDelegate?
+    
     lazy var mainStack: UIStackView = {
         let s = UIStackView()
         s.axis = .vertical
@@ -62,8 +83,17 @@ class CharacterDetailsCell: UICollectionViewCell {
         sanity.setup(stats: character.sanity)
     }
     
+    func didUpdateSelected(type: StatType, selected: Int) {
+        delegate?.didUpdateStat(cell: self, type: type, selected: selected)
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        might.delegate = self
+        speed.delegate = self
+        knowledge.delegate = self
+        sanity.delegate = self
         
         mainStack.addArrangedSubview(characterImage)
 
@@ -95,8 +125,8 @@ class CharacterDetailsCell: UICollectionViewCell {
     }
 }
 
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIScrollViewDelegate {
-    let characters: [Character]
+class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIScrollViewDelegate, CharacterCellDelegate {
+    var characters: [Character]
 
     lazy var collectionView: UICollectionView = {
         let flow = UICollectionViewFlowLayout()
@@ -144,13 +174,27 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "characterCell", for: indexPath) as? CharacterDetailsCell ?? CharacterDetailsCell()
         
         cell.setup(character: characters[indexPath.row])
+        cell.delegate = self
         return cell;
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            guard let index = collectionView.indexPath(for: collectionView.visibleCells.first!)?.row else { return }
+            pageControl.currentPage = index
+            title = characters[index].name
+        }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         guard let index = collectionView.indexPath(for: collectionView.visibleCells.first!)?.row else { return }
         pageControl.currentPage = index
         title = characters[index].name
+    }
+    
+    func didUpdateStat(cell: CharacterDetailsCell, type: StatType, selected: Int) {
+        guard let index = collectionView.indexPath(for: cell)?.row else { return }
+        characters[index].setSelected(type: type, index: selected)
     }
     
     init(characters: [Character]) {

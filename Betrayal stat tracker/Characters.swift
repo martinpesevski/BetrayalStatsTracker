@@ -20,10 +20,19 @@ struct Character: Equatable {
     let name: String
     let image: UIImage
     let teamColor: TeamColor
-    let might: [StatValue]
-    let speed: [StatValue]
-    let knowledge: [StatValue]
-    let sanity: [StatValue]
+    var might: [StatValue]
+    var speed: [StatValue]
+    var knowledge: [StatValue]
+    var sanity: [StatValue]
+    
+    mutating func setSelected(type: StatType, index: Int) {
+        switch type {
+        case .might: for (i, _) in might.enumerated() { might[i].isSelected = i == index }
+        case .speed: for (i, _) in speed.enumerated() { speed[i].isSelected = i == index }
+        case .knowledge: for (i, _) in knowledge.enumerated() { knowledge[i].isSelected = i == index }
+        case .sanity: for (i, _) in sanity.enumerated() { sanity[i].isSelected = i == index }
+        }
+    }
 }
 
 let Flash = Character(name: "Darrin \"Flash\" Williams",
