@@ -34,7 +34,7 @@ enum StatType {
         switch self {
         case .might: return "Might"
         case .speed: return "Speed"
-        case .knowledge: return "Knoledge"
+        case .knowledge: return "Knowledge"
         case .sanity: return "Sanity"
         }
     }
@@ -109,13 +109,15 @@ class CharacterDetailsCell: UICollectionViewCell, StatHolderDelegate {
         mainStack.addArrangedSubview(sanity)
                 
         addSubview(mainStack)
+        let isSmallDevice = UIScreen.main.bounds.height <= 667
+        let inset = isSmallDevice ? 100 : 80
         characterImage.snp.makeConstraints { make in
-            make.width.equalToSuperview().inset(80)
+            make.width.equalToSuperview().inset(inset)
             make.height.equalTo(characterImage.snp.width)
         }
         mainStack.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalToSuperview().inset(80)
+            make.top.equalToSuperview().inset(isSmallDevice ? 50 : 80)
             make.bottom.equalToSuperview().inset(100)
         }
     }

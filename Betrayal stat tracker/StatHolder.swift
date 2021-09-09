@@ -47,7 +47,7 @@ class StatView: UIView {
     }
 }
 
-protocol StatHolderDelegate: class {
+protocol StatHolderDelegate: AnyObject {
     func didUpdateSelected(type: StatType, selected: Int)
 }
 
@@ -109,6 +109,7 @@ class StatHolder: UIView {
     lazy var titleLabel: UILabel = {
         let l = UILabel()
         l.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        l.snp.makeConstraints { make in make.height.equalTo(18) }
         return l
     }()
     
