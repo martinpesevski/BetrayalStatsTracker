@@ -1,6 +1,0 @@
-framework module Pods_Betrayal_stat_tracker {
-  umbrella header "Pods-Betrayal stat tracker-umbrella.h"
-
-  export *
-  module * { export * }
-}
