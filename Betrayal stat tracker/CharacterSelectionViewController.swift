@@ -7,8 +7,19 @@
 
 import UIKit
 
-class CharacterSelectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
-    let characters = [Flash, OxBellows, JennyLeClerc, HeatherGranville, VivianLopez, MadameZostra, MissyDubourde, ZoeIngstrom, FatherRhinehardt, LongFellow, BrandonJaspers, PeterAkimoto]
+class CharacterSelectionViewController: UIViewController {
+    let characters = [Characters.flash.character,
+                      Characters.oxBellows.character,
+                      Characters.jennyLeClerc.character,
+                      Characters.heatherGranville.character,
+                      Characters.vivianLopez.character,
+                      Characters.madameZostra.character,
+                      Characters.missyDubourde.character,
+                      Characters.zoeIngstrom.character,
+                      Characters.fatherReinhardt.character,
+                      Characters.longfellow.character,
+                      Characters.brandonJaspers.character,
+                      Characters.peterAkimoto.character]
 
     var selectedCharacters: [Character] = []
     
@@ -71,6 +82,20 @@ class CharacterSelectionViewController: UIViewController, UICollectionViewDataSo
         navigationController?.pushViewController(vc, animated: true)
     }
     
+    func deselect(_ character: Character) {
+        if selectedCharacters.contains(character) {
+            selectedCharacters.remove(at: selectedCharacters.firstIndex(of: character)!)
+            updateIndexes()
+        }
+        
+        if selectedCharacters.count < 3 {
+            doneButton.isEnabled = false
+            doneButton.backgroundColor = .systemGray3
+        }
+    }
+}
+
+extension CharacterSelectionViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "default", for: indexPath) as? CharacterSelectionCell ?? CharacterSelectionCell()
         let character = characters[indexPath.row]
@@ -94,6 +119,8 @@ class CharacterSelectionViewController: UIViewController, UICollectionViewDataSo
         }
         
         selectedCharacters.append(character)
+        updateIndexes()
+
         if selectedCharacters.count >= 3 {
             doneButton.isEnabled = true
             doneButton.backgroundColor = .systemBlue
@@ -101,19 +128,17 @@ class CharacterSelectionViewController: UIViewController, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-
         let character = characters[indexPath.row]
         deselect(character)
     }
     
-    func deselect(_ character: Character) {
-        if selectedCharacters.contains(character) {
-            selectedCharacters.remove(at: selectedCharacters.firstIndex(of: character)!)
-        }
-        
-        if selectedCharacters.count < 3 {
-            doneButton.isEnabled = false
-            doneButton.backgroundColor = .systemGray3
+    func updateIndexes() {
+        for (index, character) in characters.enumerated() {
+            if let cell = collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? CharacterSelectionCell,
+               cell.isSelected,
+            let charIndex = selectedCharacters.firstIndex(of: character) {
+                cell.selectedNumber(number: charIndex + 1)
+            }
         }
     }
 }

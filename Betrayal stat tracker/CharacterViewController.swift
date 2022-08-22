@@ -12,10 +12,10 @@ protocol CharacterViewControllerDelegate: AnyObject {
 }
 
 class CharacterViewController: UIViewController, StatHolderDelegate {
-    var might = StatHolderView(stats: Flash.might, type: .might)
-    var speed = StatHolderView(stats: Flash.speed, type: .speed)
-    var knowledge = StatHolderView(stats: Flash.knowledge, type: .knowledge)
-    var sanity = StatHolderView(stats: Flash.sanity, type: .sanity)
+    let might: StatHolderView
+    let speed: StatHolderView
+    let knowledge: StatHolderView
+    let sanity: StatHolderView
     
     let isSmallDevice = UIScreen.main.bounds.height <= 736
     
@@ -48,6 +48,10 @@ class CharacterViewController: UIViewController, StatHolderDelegate {
     
     init(character: Character) {
         self.character = character
+        self.might = StatHolderView(stats: character.might, type: .might)
+        self.speed = StatHolderView(stats: character.speed, type: .speed)
+        self.knowledge = StatHolderView(stats: character.knowledge, type: .knowledge)
+        self.sanity = StatHolderView(stats: character.sanity, type: .sanity)
         super.init(nibName: nil, bundle: nil)
         
         might.delegate = self
@@ -69,11 +73,6 @@ class CharacterViewController: UIViewController, StatHolderDelegate {
 
         titleLabel.text = character.name
         characterImage.image = character.image
-        
-        might.setup(stats: character.might)
-        speed.setup(stats: character.speed)
-        knowledge.setup(stats: character.knowledge)
-        sanity.setup(stats: character.sanity)
     }
     
     func didUpdateSelected(type: StatType, selected: Int) {

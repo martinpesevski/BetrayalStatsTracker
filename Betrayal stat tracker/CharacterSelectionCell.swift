@@ -14,6 +14,22 @@ class CharacterSelectionCell: UICollectionViewCell {
         
         return l
     }()
+    lazy var selectionNumberView: UIView = {
+        let l = UIView()
+        l.snp.makeConstraints { make in make.width.height.equalTo(20) }
+        l.backgroundColor = .systemBlue
+        l.layer.cornerRadius = 10
+        l.isHidden = true
+        l.addSubview(selectionNumberLabel)
+        selectionNumberLabel.snp.makeConstraints { make in make.center.equalToSuperview() }
+        
+        return l
+    }()
+    lazy var selectionNumberLabel: UILabel = {
+        let l = UILabel()
+        l.textColor = .white
+        return l
+    }()
     lazy var nameLabel: UILabel = {
         let l = UILabel()
         l.adjustsFontSizeToFitWidth = true
@@ -35,17 +51,33 @@ class CharacterSelectionCell: UICollectionViewCell {
         layer.cornerRadius = 6
 
         contentView.addSubview(containerStack)
+        addSubview(selectionNumberView)
+        selectionNumberView.snp.makeConstraints{ make in make.top.left.equalToSuperview().inset(5) }
         containerStack.snp.makeConstraints { make in make.edges.equalToSuperview().inset(5) }
     }
     
     override var isSelected: Bool {
         willSet {
             if newValue {
-                backgroundColor = .systemGray3
+                selectionNumberView.alpha = 0
+                selectionNumberView.isHidden = false
+                UIView.animate(withDuration: 0.2, delay: 0) {
+                    self.backgroundColor = .systemGray3
+                    self.selectionNumberView.alpha = 1
+                }
             } else {
-                backgroundColor = .clear
+                UIView.animate(withDuration: 0.15, delay: 0) {
+                    self.backgroundColor = .clear
+                    self.selectionNumberView.alpha = 0
+                } completion: { _ in
+                    self.selectionNumberView.isHidden = true
+                }
             }
         }
+    }
+    
+    func selectedNumber(number: Int) {
+        selectionNumberLabel.text = "\(number)"
     }
 
     func setup(character: Character) {

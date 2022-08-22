@@ -165,6 +165,13 @@ class StatHolderView: UIView {
         statsStack.addSubview(highlightView)
         for label in statViews {
             statsStack.addArrangedSubview(label)
+            if label.stat.isSelected {
+                highlightView.backgroundColor = label.highlightColor
+                highlightView.snp.remakeConstraints { make in
+                    make.center.equalTo(label)
+                    make.width.height.equalTo(20)
+                }
+            }
         }
                 
         addSubview(container)
@@ -178,7 +185,7 @@ class StatHolderView: UIView {
             statview.stat = stats[index]
             if statview.stat.isSelected {
                 highlightView.backgroundColor = statview.highlightColor
-                highlightView.snp.makeConstraints { make in
+                highlightView.snp.remakeConstraints { make in
                     make.center.equalTo(view)
                     make.width.height.equalTo(20)
                 }
