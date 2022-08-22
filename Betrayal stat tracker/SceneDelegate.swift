@@ -29,9 +29,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: windowScene)
 
-        let nav = UINavigationController(rootViewController: CharacterSelection())
+        let nav = UINavigationController(rootViewController: CharacterSelectionViewController())
         if let characters = PersistenceManager.loadCharacters(), characters.count >= 3 {
-            nav.pushViewController(ViewController(characters: characters), animated: false)
+            nav.pushViewController(CharactersPageViewController(characters: characters), animated: false)
         }
         window.rootViewController = nav
         self.window = window

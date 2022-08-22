@@ -7,55 +7,35 @@
 
 import UIKit
 
-class StatView: UIView {
-    var stat: StatValue {
-        didSet {
-            label.text = "\(stat.value)"
-            if stat.isDeath { label.textColor = .systemRed } else { label.textColor = stat.isDefault ? .systemGreen : .systemGray2 }
-            updateBorder()
-        }
+struct StatValue: Equatable, Codable {
+    let value: Int
+    let isDefault: Bool
+    let isDeath: Bool
+    var isSelected: Bool
+    
+    init(value: Int, isDefault: Bool = false, isDeath: Bool = false) {
+        self.value = value
+        self.isDefault = isDefault
+        self.isDeath = isDeath
+        self.isSelected = isDefault
     }
     
-    lazy var label: UILabel = {
-        let l = UILabel()
-        l.text = "\(stat.value)"
-        l.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        l.textAlignment = .center
-        return l
-    }()
-    
-    func resetLabelColor() {
-        if stat.isDeath { label.textColor = .systemRed } else { label.textColor = stat.isDefault ? .systemGreen : .systemGray2 }
-    }
-    
-    var highlightColor: UIColor {
-        if stat.isDeath { return .systemRed } else { return stat.isDefault ? .systemGreen : .systemBlue }
-    }
-    
-    init(stat: StatValue) {
-        self.stat = stat
-        super.init(frame: .zero)
-        
-        backgroundColor = .clear
+    var isDead: Bool { isDeath == isSelected }
+}
 
-        addSubview(label)
-        label.snp.makeConstraints { make in make.edges.equalToSuperview().inset(2) }
-        layer.cornerRadius = 3
-        resetLabelColor()
-        updateBorder()
-    }
+enum StatType {
+    case might
+    case speed
+    case knowledge
+    case sanity
     
-    func updateBorder() {
-        if stat.isSelected {
-//            resetBackgroundColor()
-            label.textColor = .white
-        } else {
-            resetLabelColor()
+    var title: String {
+        switch self {
+        case .might: return "Might"
+        case .speed: return "Speed"
+        case .knowledge: return "Knowledge"
+        case .sanity: return "Sanity"
         }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -63,7 +43,7 @@ protocol StatHolderDelegate: AnyObject {
     func didUpdateSelected(type: StatType, selected: Int)
 }
 
-class StatHolder: UIView {
+class StatHolderView: UIView {
     lazy var increaseButton: UIButton = {
         let b = UIButton()
         b.backgroundColor = .systemBlue

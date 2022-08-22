@@ -7,58 +7,7 @@
 
 import UIKit
 
-class CharacterCell: UICollectionViewCell {
-    lazy var image: UIImageView = {
-        let l = UIImageView()
-        l.contentMode = .scaleAspectFill
-        
-        return l
-    }()
-    lazy var nameLabel: UILabel = {
-        let l = UILabel()
-        l.adjustsFontSizeToFitWidth = true
-        return l
-    }()
-    
-    lazy var containerStack: UIStackView = {
-        let l = UIStackView(arrangedSubviews: [image, nameLabel])
-        l.axis = .vertical
-        l.alignment = .center
-        l.spacing = 5
-        return l
-    }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        layer.borderColor = UIColor.systemBlue.cgColor
-        layer.cornerRadius = 6
-
-        contentView.addSubview(containerStack)
-        containerStack.snp.makeConstraints { make in make.edges.equalToSuperview().inset(5) }
-    }
-    
-    override var isSelected: Bool {
-        willSet {
-            if newValue {
-                backgroundColor = .systemGray3
-            } else {
-                backgroundColor = .clear
-            }
-        }
-    }
-
-    func setup(character: Character) {
-        image.image = character.image
-        nameLabel.text = character.name
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-class CharacterSelection: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+class CharacterSelectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     let characters = [Flash, OxBellows, JennyLeClerc, HeatherGranville, VivianLopez, MadameZostra, MissyDubourde, ZoeIngstrom, FatherRhinehardt, LongFellow, BrandonJaspers, PeterAkimoto]
 
     var selectedCharacters: [Character] = []
@@ -73,7 +22,7 @@ class CharacterSelection: UIViewController, UICollectionViewDataSource, UICollec
         let t = UICollectionView(frame: .zero, collectionViewLayout: layout)
         t.dataSource = self
         t.delegate = self
-        t.register(CharacterCell.self, forCellWithReuseIdentifier: "default")
+        t.register(CharacterSelectionCell.self, forCellWithReuseIdentifier: "default")
         t.allowsMultipleSelection = true
         t.contentInset = UIEdgeInsets(top: 20, left: 8, bottom: 30, right: 8)
         t.backgroundColor = .systemGray6
@@ -118,12 +67,12 @@ class CharacterSelection: UIViewController, UICollectionViewDataSource, UICollec
     
     @objc
     func onDone() {
-        let vc = ViewController(characters: selectedCharacters)
+        let vc = CharactersPageViewController(characters: selectedCharacters)
         navigationController?.pushViewController(vc, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "default", for: indexPath) as? CharacterCell ?? CharacterCell()
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "default", for: indexPath) as? CharacterSelectionCell ?? CharacterSelectionCell()
         let character = characters[indexPath.row]
         cell.setup(character: character)
         
