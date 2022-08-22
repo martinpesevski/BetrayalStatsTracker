@@ -28,11 +28,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         let window = UIWindow(windowScene: windowScene)
-        var rootViewController: UIViewController = CharacterSelection()
-        if let characters = PersistenceManager.loadCharacters() {
-            rootViewController = ViewController(characters: characters)
+
+        let nav = UINavigationController(rootViewController: CharacterSelection())
+        if let characters = PersistenceManager.loadCharacters(), characters.count >= 3 {
+            nav.pushViewController(ViewController(characters: characters), animated: false)
         }
-        let nav = UINavigationController(rootViewController: rootViewController)
         window.rootViewController = nav
         self.window = window
         window.makeKeyAndVisible()

@@ -18,12 +18,16 @@ enum TeamColor: Codable {
 
 struct Character: Equatable, Codable {
     let name: String
-    let image: UIImage
+    let imageName: String
     let teamColor: TeamColor
     var might: [StatValue]
     var speed: [StatValue]
     var knowledge: [StatValue]
     var sanity: [StatValue]
+    
+    var image: UIImage {
+        UIImage(named: imageName) ?? UIImage()
+    }
     
     mutating func setSelected(type: StatType, index: Int) {
         switch type {
@@ -36,7 +40,7 @@ struct Character: Equatable, Codable {
 }
 
 let Flash = Character(name: "Darrin \"Flash\" Williams",
-                      image: UIImage(named: "Flash") ?? UIImage(),
+                      imageName: "Flash",
                       teamColor: .red,
                       might:
                         [StatValue(value: 0, isDeath: true),
@@ -80,7 +84,7 @@ let Flash = Character(name: "Darrin \"Flash\" Williams",
                          StatValue(value: 7)])
 
 let LongFellow = Character(name: "Professor Longfellow",
-                      image: UIImage(named: "Longfellow") ?? UIImage(),
+                      imageName: "Longfellow",
                       teamColor: .gray,
                       might:
                         [StatValue(value: 0, isDeath: true),
@@ -124,7 +128,7 @@ let LongFellow = Character(name: "Professor Longfellow",
                          StatValue(value: 7)])
 
 let VivianLopez = Character(name: "Vivian Lopez",
-                      image: UIImage(named: "VivianLopez") ?? UIImage(),
+                      imageName: "VivianLopez",
                       teamColor: .blue,
                       might:
                         [StatValue(value: 0, isDeath: true),
@@ -168,7 +172,7 @@ let VivianLopez = Character(name: "Vivian Lopez",
                          StatValue(value: 8)])
 
 let BrandonJaspers = Character(name: "Brandon Jaspers",
-                      image: UIImage(named: "BrandonJaspers") ?? UIImage(),
+                      imageName: "BrandonJaspers",
                       teamColor: .green,
                       might:
                         [StatValue(value: 0, isDeath: true),
@@ -212,7 +216,7 @@ let BrandonJaspers = Character(name: "Brandon Jaspers",
                          StatValue(value: 8)])
 
 let JennyLeClerc = Character(name: "Jenny LeClerc",
-                      image: UIImage(named: "JennyLeClerc") ?? UIImage(),
+                      imageName: "JennyLeClerc",
                       teamColor: .purple,
                       might:
                         [StatValue(value: 0, isDeath: true),
@@ -256,7 +260,7 @@ let JennyLeClerc = Character(name: "Jenny LeClerc",
                          StatValue(value: 6)])
 
 let MissyDubourde = Character(name: "Missy Dubourde",
-                      image: UIImage(named: "MissyDubourde") ?? UIImage(),
+                      imageName: "MissyDubourde",
                       teamColor: .yellow,
                       might:
                         [StatValue(value: 0, isDeath: true),
@@ -300,7 +304,7 @@ let MissyDubourde = Character(name: "Missy Dubourde",
                          StatValue(value: 7)])
 
 let FatherRhinehardt = Character(name: "Father Rhinehardt",
-                      image: UIImage(named: "Rhinehardt") ?? UIImage(),
+                      imageName: "Rhinehardt",
                       teamColor: .gray,
                       might:
                         [StatValue(value: 0, isDeath: true),
@@ -344,7 +348,7 @@ let FatherRhinehardt = Character(name: "Father Rhinehardt",
                          StatValue(value: 8)])
 
 let MadameZostra = Character(name: "Madame Zostra",
-                      image: UIImage(named: "MadameZostra") ?? UIImage(),
+                      imageName: "MadameZostra",
                       teamColor: .blue,
                       might:
                         [StatValue(value: 0, isDeath: true),
@@ -388,7 +392,7 @@ let MadameZostra = Character(name: "Madame Zostra",
                          StatValue(value: 8)])
 
 let ZoeIngstrom = Character(name: "Zoe Ingstrom",
-                      image: UIImage(named: "ZoeIngstrom") ?? UIImage(),
+                      imageName: "ZoeIngstrom",
                       teamColor: .yellow,
                       might:
                         [StatValue(value: 0, isDeath: true),
@@ -432,7 +436,7 @@ let ZoeIngstrom = Character(name: "Zoe Ingstrom",
                          StatValue(value: 8)])
 
 let HeatherGranville = Character(name: "Heather Granville",
-                      image: UIImage(named: "HeatherGranville") ?? UIImage(),
+                      imageName: "HeatherGranville",
                       teamColor: .purple,
                       might:
                         [StatValue(value: 0, isDeath: true),
@@ -476,7 +480,7 @@ let HeatherGranville = Character(name: "Heather Granville",
                          StatValue(value: 6)])
 
 let PeterAkimoto = Character(name: "Peter Akimoto",
-                      image: UIImage(named: "PeterAkimoto") ?? UIImage(),
+                      imageName: "PeterAkimoto",
                       teamColor: .green,
                       might:
                         [StatValue(value: 0, isDeath: true),
@@ -520,7 +524,7 @@ let PeterAkimoto = Character(name: "Peter Akimoto",
                          StatValue(value: 7)])
 
 let OxBellows = Character(name: "Ox Bellows",
-                      image: UIImage(named: "OxBellows") ?? UIImage(),
+                      imageName: "OxBellows",
                       teamColor: .red,
                       might:
                         [StatValue(value: 0, isDeath: true),

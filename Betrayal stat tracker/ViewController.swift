@@ -49,6 +49,7 @@ class CharacterViewController: UIViewController, StatHolderDelegate {
     var speed = StatHolder(stats: Flash.speed, type: .speed)
     var knowledge = StatHolder(stats: Flash.knowledge, type: .knowledge)
     var sanity = StatHolder(stats: Flash.sanity, type: .sanity)
+    
     let isSmallDevice = UIScreen.main.bounds.height <= 736
     
     weak var characterDelegate: CharacterViewControllerDelegate?
@@ -98,7 +99,7 @@ class CharacterViewController: UIViewController, StatHolderDelegate {
             make.top.equalToSuperview().inset(isSmallDevice ? 100 : 130)
             make.bottom.equalToSuperview().inset(100)
         }
-        
+
         titleLabel.text = character.name
         characterImage.image = character.image
         
@@ -109,6 +110,7 @@ class CharacterViewController: UIViewController, StatHolderDelegate {
     }
     
     func didUpdateSelected(type: StatType, selected: Int) {
+        
         character.setSelected(type: type, index: selected)
         characterDelegate?.didUpdateCharacter(character)
     }
@@ -154,11 +156,14 @@ class ViewController: UIPageViewController, UIPageViewControllerDelegate, UIPage
     }
     
     init(characters: [Character]) {
-        for character in characters {
-            controllers.append(CharacterViewController(character: character))
-        }
         self.characters = characters
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
+        
+        for character in characters {
+            let controller = CharacterViewController(character: character)
+            controller.characterDelegate = self
+            controllers.append(controller)
+        }
         
         PersistenceManager.saveCharacters(characters)
     }
@@ -197,14 +202,17 @@ class PersistenceManager {
     
     static func saveCharacters(_ characters: [Character]) {
         let defaults = UserDefaults.standard
-        
-        defaults.set(characters, forKey: "betrayal characters")
+        defaults.set(try? PropertyListEncoder().encode(characters), forKey: "betrayal characters")
     }
     
     static func loadCharacters() -> [Character]? {
         let defaults = UserDefaults.standard
         
-        return defaults.object(forKey: "betrayal characters") as? [Character]
+        if let data = defaults.object(forKey: "betrayal characters") as? Data {
+            return try? PropertyListDecoder().decode([Character].self, from: data)
+        }
+        
+        return nil
     }
 }
 

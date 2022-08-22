@@ -110,6 +110,12 @@ class CharacterSelection: UIViewController, UICollectionViewDataSource, UICollec
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        collectionView.indexPathsForSelectedItems?.forEach { self.collectionView.deselectItem(at: $0, animated: false) }
+    }
+    
     @objc
     func onDone() {
         let vc = ViewController(characters: selectedCharacters)

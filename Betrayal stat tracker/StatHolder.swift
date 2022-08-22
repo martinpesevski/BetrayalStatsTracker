@@ -19,26 +19,38 @@ class StatView: UIView {
     lazy var label: UILabel = {
         let l = UILabel()
         l.text = "\(stat.value)"
-        if stat.isDeath { l.textColor = .systemRed } else { l.textColor = stat.isDefault ? .systemGreen : .systemGray2 }
         l.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         l.textAlignment = .center
         return l
     }()
     
+    func resetLabelColor() {
+        if stat.isDeath { label.textColor = .systemRed } else { label.textColor = stat.isDefault ? .systemGreen : .systemGray2 }
+    }
+    
+    var highlightColor: UIColor {
+        if stat.isDeath { return .systemRed } else { return stat.isDefault ? .systemGreen : .systemBlue }
+    }
+    
     init(stat: StatValue) {
         self.stat = stat
         super.init(frame: .zero)
+        
+        backgroundColor = .clear
+
         addSubview(label)
         label.snp.makeConstraints { make in make.edges.equalToSuperview().inset(2) }
+        layer.cornerRadius = 3
+        resetLabelColor()
         updateBorder()
     }
     
     func updateBorder() {
         if stat.isSelected {
-            layer.borderWidth = 1
-            layer.borderColor = UIColor.systemBlue.cgColor
+//            resetBackgroundColor()
+            label.textColor = .white
         } else {
-            layer.borderWidth = 0
+            resetLabelColor()
         }
     }
     
@@ -74,6 +86,13 @@ class StatHolder: UIView {
         b.layer.cornerRadius = 10
         
         return b
+    }()
+    
+    lazy var highlightView: UIView = {
+        let l = UIView()
+        l.layer.cornerRadius = 3
+        l.backgroundColor = .red
+        return l
     }()
     
     lazy var statsStack: UIStackView = {
@@ -163,6 +182,7 @@ class StatHolder: UIView {
         
         titleLabel.text = type.title
                 
+        statsStack.addSubview(highlightView)
         for label in statViews {
             statsStack.addArrangedSubview(label)
         }
@@ -174,7 +194,15 @@ class StatHolder: UIView {
     func setup(stats: [StatValue]) {
         self.stats = stats
         for (index, view) in statsStack.arrangedSubviews.enumerated() where view is StatView {
-            (view as! StatView).stat = stats[index]
+            guard let statview = view as? StatView else { return }
+            statview.stat = stats[index]
+            if statview.stat.isSelected {
+                highlightView.backgroundColor = statview.highlightColor
+                highlightView.snp.makeConstraints { make in
+                    make.center.equalTo(view)
+                    make.width.height.equalTo(20)
+                }
+            }
         }
     }
     
@@ -188,6 +216,17 @@ class StatHolder: UIView {
     func update() {
         for (i, statView) in statViews.enumerated() {
             statView.stat = stats[i]
+            if stats[i].isSelected {
+                highlightView.backgroundColor = statView.highlightColor
+                highlightView.snp.remakeConstraints { make in
+                    make.center.equalTo(statView)
+                    make.width.height.equalTo(20)
+                }
+                
+                UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut) {
+                    self.layoutIfNeeded()
+                }
+            }
         }
     }
     
