@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum TeamColor {
+enum TeamColor: Codable {
     case red
     case blue
     case gray
@@ -16,7 +16,7 @@ enum TeamColor {
     case yellow
 }
 
-struct Character: Equatable {
+struct Character: Equatable, Codable {
     let name: String
     let image: UIImage
     let teamColor: TeamColor
@@ -174,8 +174,8 @@ let BrandonJaspers = Character(name: "Brandon Jaspers",
                         [StatValue(value: 0, isDeath: true),
                          StatValue(value: 2),
                          StatValue(value: 3),
-                         StatValue(value: 3, isDefault: true),
-                         StatValue(value: 4),
+                         StatValue(value: 3),
+                         StatValue(value: 4, isDefault: true),
                          StatValue(value: 5),
                          StatValue(value: 6),
                          StatValue(value: 6),

@@ -15,8 +15,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
+        if #available(iOS 15, *) {
+            let navigationBarAppearance = UINavigationBarAppearance()
+            navigationBarAppearance.configureWithOpaqueBackground()
+            navigationBarAppearance.titleTextAttributes = [
+                NSAttributedString.Key.foregroundColor : UIColor.label
+            ]
+            navigationBarAppearance.backgroundColor = UIColor.systemGray5
+            UINavigationBar.appearance().standardAppearance = navigationBarAppearance
+            UINavigationBar.appearance().compactAppearance = navigationBarAppearance
+            UINavigationBar.appearance().scrollEdgeAppearance = navigationBarAppearance
+        }
+        
         let window = UIWindow(windowScene: windowScene)
-        let nav = UINavigationController(rootViewController: CharacterSelection())
+        var rootViewController: UIViewController = CharacterSelection()
+        if let characters = PersistenceManager.loadCharacters() {
+            rootViewController = ViewController(characters: characters)
+        }
+        let nav = UINavigationController(rootViewController: rootViewController)
         window.rootViewController = nav
         self.window = window
         window.makeKeyAndVisible()

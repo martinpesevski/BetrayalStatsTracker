@@ -8,28 +8,49 @@
 import UIKit
 
 class CharacterCell: UICollectionViewCell {
-    let image = UIImageView()
+    lazy var image: UIImageView = {
+        let l = UIImageView()
+        l.contentMode = .scaleAspectFill
+        
+        return l
+    }()
+    lazy var nameLabel: UILabel = {
+        let l = UILabel()
+        l.adjustsFontSizeToFitWidth = true
+        return l
+    }()
+    
+    lazy var containerStack: UIStackView = {
+        let l = UIStackView(arrangedSubviews: [image, nameLabel])
+        l.axis = .vertical
+        l.alignment = .center
+        l.spacing = 5
+        return l
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         layer.borderColor = UIColor.systemBlue.cgColor
+        layer.cornerRadius = 6
 
-        addSubview(image)
-        image.snp.makeConstraints { make in make.edges.equalToSuperview().inset(5) }
+        contentView.addSubview(containerStack)
+        containerStack.snp.makeConstraints { make in make.edges.equalToSuperview().inset(5) }
     }
     
     override var isSelected: Bool {
         willSet {
             if newValue {
-                layer.borderWidth = 2
+                backgroundColor = .systemGray3
             } else {
-                layer.borderWidth = 0
+                backgroundColor = .clear
             }
         }
     }
 
     func setup(character: Character) {
         image.image = character.image
+        nameLabel.text = character.name
     }
     
     required init?(coder: NSCoder) {
@@ -44,7 +65,7 @@ class CharacterSelection: UIViewController, UICollectionViewDataSource, UICollec
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        let width = (UIScreen.main.bounds.size.width / 2) - 30
+        let width = (UIScreen.main.bounds.size.width / 2) - 46
         layout.itemSize = CGSize(width: width, height: width)
         layout.minimumInteritemSpacing = 10
         layout.minimumLineSpacing = 10
@@ -54,13 +75,15 @@ class CharacterSelection: UIViewController, UICollectionViewDataSource, UICollec
         t.delegate = self
         t.register(CharacterCell.self, forCellWithReuseIdentifier: "default")
         t.allowsMultipleSelection = true
-        
+        t.contentInset = UIEdgeInsets(top: 20, left: 8, bottom: 30, right: 8)
+        t.backgroundColor = .systemGray6
         return t
     }()
     
     lazy var doneButton: UIButton = {
         let b = UIButton()
         b.setTitle("Done", for: .normal)
+        b.setTitleColor(UIColor.label, for: .disabled)
         b.backgroundColor = .systemGray3
         b.isEnabled = false
         b.layer.cornerRadius = 10
@@ -75,8 +98,8 @@ class CharacterSelection: UIViewController, UICollectionViewDataSource, UICollec
         title = "Select minimum 3 characters"
         view.addSubview(collectionView)
         view.addSubview(doneButton)
+        view.backgroundColor = .systemGray6
 
-        collectionView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 30, right: 0)
         collectionView.snp.makeConstraints { make in
             make.top.left.right.equalTo(view.layoutMarginsGuide)
             make.bottom.equalTo(doneButton.snp.top)
